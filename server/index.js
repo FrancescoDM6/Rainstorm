@@ -226,7 +226,13 @@ async function streamOllama(prompt, res) {
   })
 
   if (!response.ok) {
-    throw new Error(`Ollama error: ${response.status} ${response.statusText}`)
+    let errorText = '';
+    try {
+      errorText = await response.text();
+    } catch (e) {
+      errorText = 'Could not read error body';
+    }
+    throw new Error(`Ollama error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const reader = response.body.getReader()
@@ -293,7 +299,13 @@ async function streamOpenAI(prompt, res) {
   })
 
   if (!response.ok) {
-    throw new Error(`OpenAI-compatible API error: ${response.status} ${response.statusText}`)
+    let errorText = '';
+    try {
+      errorText = await response.text();
+    } catch (e) {
+      errorText = 'Could not read error body';
+    }
+    throw new Error(`OpenAI-compatible API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const reader = response.body.getReader()
